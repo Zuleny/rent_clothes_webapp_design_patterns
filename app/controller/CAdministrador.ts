@@ -15,60 +15,63 @@ export class CAdministrador{
     /**
      * getList
      */
-    public getList = async (request: Request, response: Response): Promise<Response> =>{
+    public getList = async (request: Request, response: Response): Promise<void> =>{
         try {
             let list = await this._mAdministrador.getAll();
-            return response.json(list);
+            response.render('VAdministrador', {list});
         } catch (error) {
             console.error("Error into CAdministrador > getList: " + error);
-            return response.status(500).json({
-                status: 500,
-                msg: "Error internal server"
-            });
+            response.render('VAdministrador', {error: "Ha ocurrido un error"});
+        }
+
+    }
+
+    public getById = async (request: Request, response: Response): Promise<void> =>{
+        try {
+            let entity = await this._mAdministrador.getById(request.params.id);
+            let list = await this._mAdministrador.getAll();
+            response.render('VAdministrador', {list, entity});
+        } catch (error) {
+            console.error("Error into CAdministrador > getById: " + error);
+            response.render('VAdministrador', {error: "Ha ocurrido un error"});
         }
 
     }
     
-    public postAdministrador = async (request: Request, response: Response): Promise<Response> => {
+    public postAdministrador = async (request: Request, response: Response): Promise<void> => {
         try {
             let { nombre, email, contrasenia, telefono } = request.body;
-            let result = await this._mAdministrador.create({nombre, email, contrasenia, telefono})
-            return response.json(result);
+            let post = await this._mAdministrador.create({nombre, email, contrasenia, telefono});
+            let list = await this._mAdministrador.getAll();
+            response.render('VAdministrador',{list,post});
         } catch (error) {
             console.log("Error into CAdministrador > postAdministrador", error);
-            return response.status(500).json({
-                status: 500,
-                msg: "Error internal server"
-            });
+            response.render('VAdministrador', {error: "Ha ocurrido un error"});
         }
     }
 
-    public putAdministrador = async (request: Request, response: Response): Promise<Response> => {
+    public putAdministrador = async (request: Request, response: Response): Promise<void> => {
         try {
             let { nombre, email, contrasenia, telefono } = request.body;
             let id = request.params.id;
-            let result = await this._mAdministrador.update(id, {nombre, email, contrasenia, telefono});
-            return response.json(result);
+            let put = await this._mAdministrador.update(id, {nombre, email, contrasenia, telefono});
+            let list = await this._mAdministrador.getAll();
+            response.render('VAdministrador',{list, put});
         } catch (error) {
             console.log("Error into CAdministrador > putAdministrador", error);
-            return response.status(500).json({
-                status: 500,
-                msg: "Error internal server"
-            });
+            response.render('VAdministrador', {error: "Ha ocurrido un error"});
         }
     }
 
-    public deleteAdministrador = async (request: Request, response: Response): Promise<Response> => {
+    public deleteAdministrador = async (request: Request, response: Response): Promise<void> => {
         try {
             let id = request.params.id;
-            let result = await this._mAdministrador.delete(id);
-            return response.json(result);
+            let _delete = await this._mAdministrador.delete(id);
+            let list = await this._mAdministrador.getAll();
+            response.render('VAdministrador',{list, _delete});
         } catch (error) {
             console.log("Error into CAdministrador > deleteAdministrador", error);
-            return response.status(500).json({
-                status: 500,
-                msg: "Error internal server"
-            });
+            response.render('VAdministrador', {error: "Ha ocurrido un error"});
         }
     }
 }

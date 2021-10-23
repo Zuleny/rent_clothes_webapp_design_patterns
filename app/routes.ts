@@ -7,6 +7,7 @@ const router = Router();
 //administrador's routes
 let cAdministrador: CAdministrador = new CAdministrador();
 router.get('/administrador', cAdministrador.getList);
+router.get('/administrador/:id', cAdministrador.getById);
 router.post('/administrador/crear', cAdministrador.postAdministrador);
 router.put('/administrador/modificar/:id', cAdministrador.putAdministrador);
 router.delete('/administrador/eliminar/:id', cAdministrador.deleteAdministrador);
