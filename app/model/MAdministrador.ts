@@ -11,7 +11,14 @@ export class MAdministrador{
      private _telefono: string;
      private _connection: Connection;
 
-     
+     /**
+      * Method constructor of Administrador
+      * @param id unique identifier to administrador
+      * @param nombre name of administrador
+      * @param email email of administrador
+      * @param contrasenia password of administrador
+      * @param telefono cellphone number of administrador
+      */
      public constructor(id: number = 0,nombre:string = '', email: string = '', contrasenia: string = '', telefono: string = '') {
          this._id = id;
          this._nombre = nombre;
@@ -21,6 +28,10 @@ export class MAdministrador{
          this._connection = Connection.getInstance();
      }
 
+     /**
+      * get all administradores
+      * @returns the list of all administradores
+      */
      public getAll = async (): Promise<Array<any>> => {
         try {
             let list: Array<any> = (await this._connection.query('select * from administrador;')).rows;
@@ -31,6 +42,11 @@ export class MAdministrador{
         }
     }
 
+    /**
+     * get all data of a specific administrador
+     * @param id administrador identifier to get data
+     * @returns data of a administrador or null if not found
+     */
     public getById = async (id: any): Promise<any | null> => {
         try {
             let entity: any = (await this._connection.query(`select * from administrador where id = ${id};`)).rows[0];
@@ -41,6 +57,11 @@ export class MAdministrador{
         }
     }
 
+    /**
+     * create a new administrador
+     * @param entity new administrador data object
+     * @returns a created administrator data object
+     */
     public create = async (entity: any): Promise<any | null> =>{
         try {
             let response: any = (await this._connection.query(`insert into administrador(nombre, email, contrasenia, telefono) values('${entity.nombre}', '${entity.email}', '${entity.contrasenia}', '${entity.telefono}') returning*;`)).rows[0];
@@ -51,6 +72,12 @@ export class MAdministrador{
         }
     }
 
+    /**
+     * update a specific administrador
+     * @param id administrador identifier to update
+     * @param data the new data to update
+     * @returns an updated administrator data object
+     */
     public update = async (id: any, data: any): Promise<any> => {
         try {
             let response: any = (await this._connection.query(`update administrador set nombre='${data.nombre}', email='${data.email}', contrasenia='${data.contrasenia}', telefono='${data.telefono}' where id=${id} returning *;`)).rows[0];
@@ -61,6 +88,11 @@ export class MAdministrador{
         }
     }
 
+    /**
+     * delete a specific administrador
+     * @param id administrador identifier to delete
+     * @returns a deleted administrator data object
+     */
     public delete = async (id: any): Promise<any> => {
         try {
             let response: any = (await this._connection.query(`delete from administrador where id=${id} returning *;`)).rows[0];
@@ -70,11 +102,4 @@ export class MAdministrador{
             return null;
         }
     }
-
-
-    get id(): number{
-        return this._id;
-    }
-
-    
 }
