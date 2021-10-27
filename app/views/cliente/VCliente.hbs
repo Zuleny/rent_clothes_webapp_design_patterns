@@ -8,7 +8,7 @@
 {{#if post}}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     <h4 class="alert-heading">Se Registro Correctamente!</h4>
-    <p>Articulo {{post.nombre}}, descripcion {{post.descripcion}}, precio {{post.precio}}</p>
+    <p>Cliente {{post.nombre}}, ci {{post.ci}}, email {{post.email}}, telefono {{post.telefono}}</p>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
@@ -16,7 +16,7 @@
 {{#if put}}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     <h4 class="alert-heading">Se Modifico Correctamente!</h4>
-    <p>Articulo {{put.nombre}}, descripcion {{put.descripcion}}, precio {{put.precio}}</p>
+    <p>Cliente {{put.nombre}}, email {{put.email}}, telefono {{put.telefono}}</p>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
@@ -24,7 +24,7 @@
 {{#if _delete}}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     <h4 class="alert-heading">Se Elimino Correctamente!</h4>
-    <p>Articulo {{_delete.nombre}}, descripcion {{_delete.descripcion}}, precio {{_delete.precio}}</p>
+    <p>Cliente {{_delete.nombre}}, email {{_delete.email}}, telefono {{_delete.telefono}}</p>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
@@ -35,25 +35,28 @@
         Modificar
     </div>
     <div class="card-body">
-        <form action="/articulo/modificar/{{entity.codigo}}?_method=PUT" method="post" id="modal-create-update">
+        <form action="/cliente/modificar/{{entity.ci}}?_method=PUT" method="post" id="modal-create-update">
             <input type="hidden" name="_method" value="PUT">
+            <div class="mb-3">
+                <label class="form-label">CI {{entity.ci}}</label>
+            </div>
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId"
-                    placeholder="Traje Tipico Tinkus" required value="{{entity.nombre}}">
+                    placeholder="Pablo Rodriguez" required value="{{entity.nombre}}">
             </div>
             <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripcion</label>
-                <input type="text" class="form-control" name="descripcion" id="descripcion" aria-describedby="helpId"
-                    placeholder="Traje de tinkus varon color verde y naranja" value="{{entity.descripcion}}">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" name="email" id="email" aria-describedby="helpId"
+                    placeholder="pablo@gmail.com" value="{{entity.email}}">
             </div>
             <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
-                <input type="number" min="1" step="0.01" class="form-control" name="precio" id="precio"
-                    aria-describedby="helpId" placeholder="76627873" value="{{entity.precio}}">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="number" min="1" class="form-control" name="telefono" id="telefono"
+                    aria-describedby="helpId" placeholder="76627873" value="{{entity.telefono}}" required>
             </div>
             <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
-            <a href="/articulo" class="btn btn-secondary">
+            <a href="/cliente" class="btn btn-secondary">
                 Cancelar
             </a>
         </form>
@@ -65,21 +68,26 @@
         Nuevo +
     </div>
     <div class="card-body">
-        <form action="/articulo/crear" method="post" id="modal-create-update">
+        <form action="/cliente/crear" method="post" id="modal-create-update">
+            <div class="mb-3">
+                <label for="ci" class="form-label">CI</label>
+                <input type="number" min="1" class="form-control" name="ci" id="ci"
+                    aria-describedby="helpId" placeholder="9719837" value="{{entity.ci}}" required>
+            </div>
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId"
-                    placeholder="Traje Tipico Tinkus" required value="{{entity.nombre}}">
+                    placeholder="Pablo Rodriguez" required value="{{entity.nombre}}">
             </div>
             <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripcion</label>
-                <input type="descripcion" class="form-control" name="descripcion" id="descripcion" aria-describedby="helpId"
-                    placeholder="Traje de tinkus varon color verde y naranja" value="{{entity.descripcion}}">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email" aria-describedby="helpId"
+                    placeholder="pablo@gmail.com" value="{{entity.email}}">
             </div>
             <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
-                <input type="number" min="1" step="0.01" class="form-control" name="precio" id="precio"
-                    aria-describedby="helpId" placeholder="85" value="{{entity.precio}}" required>
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="number" min="1" class="form-control" name="telefono" id="telefono"
+                    aria-describedby="helpId" placeholder="85" value="{{entity.telefono}}" required>
             </div>
             <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
         </form>
@@ -90,30 +98,30 @@
 <br>
 <div class="card">
     <div class="card-header text-success fw-bold">
-        Articulos
+        Clientes
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-success table-bordered">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>CI</th>
                         <th>Nombre</th>
-                        <th>Descripcion</th>
-                        <th>Precio</th>
+                        <th>Email</th>
+                        <th>Telefono</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each list}}
                     <tr>
-                        <td>{{codigo}}</td>
+                        <td>{{ci}}</td>
                         <td>{{nombre}}</td>
-                        <td>{{descripcion}}</td>
-                        <td>{{precio}}</td>
+                        <td>{{email}}</td>
+                        <td>{{telefono}}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="">
-                                <form action="/articulo/{{codigo}}" method="get">
+                                <form action="/cliente/{{ci}}" method="get">
                                     <button type="submit" class="btn btn-outline-warning" data-bs-toggle="collapse "
                                         data-bs-target="#collapseExample" aria-expanded="false"
                                         aria-controls="collapseExample">
@@ -121,7 +129,7 @@
                                     </button>
                                 </form>
 
-                                <form action="/articulo/eliminar/{{codigo}}?_method=DELETE" method="post">
+                                <form action="/cliente/eliminar/{{ci}}?_method=DELETE" method="post">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-outline-danger">Borrar</button>
                                 </form>
