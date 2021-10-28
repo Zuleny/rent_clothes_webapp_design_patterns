@@ -62,6 +62,10 @@ export class MCliente{
     public create = async (entity: any): Promise<any | null> =>{
         try {
             let response: any = (await this._connection.query(`insert into Cliente(ci, nombre, email, telefono) values(${entity.ci}, '${entity.nombre}', '${entity.email}', '${entity.telefono}') returning*;`)).rows[0];
+            this._ci = response.ci;
+            this._nombre = response.nombre;
+            this._email = response.email;
+            this._telefono = response.telefono;
             return response;
         } catch (error) {
             console.error("Error into MCliente > create: " + error);
@@ -78,6 +82,9 @@ export class MCliente{
     public update = async (id: any, data: any): Promise<any> => {
         try {
             let response: any = (await this._connection.query(`update Cliente set nombre='${data.nombre}', email='${data.email}', telefono='${data.telefono}' where ci=${id} returning *;`)).rows[0];
+            this._nombre = response.nombre;
+            this._email = response.email;
+            this._telefono = response.telefono;
             return response;
         } catch (error) {
             console.error("Error into MCliente > update: " + error);
@@ -98,5 +105,21 @@ export class MCliente{
             console.error("Error into MCliente > update: " + error);
             return null;
         }
+    }
+
+    get ci(){
+        return this._ci;
+    }
+
+    get nombre(){
+        return this._nombre;
+    }
+
+    get email(){
+        return this._email;
+    }
+
+    get telefono(){
+        return this._telefono
     }
 }

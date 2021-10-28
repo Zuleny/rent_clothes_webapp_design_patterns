@@ -35,9 +35,9 @@ export class App{
             layoutsDir: path.join(this.app.get('views'), 'layouts'),
             partialsDir: path.join(this.app.get('views'), 'partials'),
             extname: '.hbs',
-            defaultLayout: 'layout',
+            defaultLayout: 'layout'
         }));
-        this.app.set('view engine', '.hbs')
+        this.app.set('view engine', '.hbs');
     }
 
     /**

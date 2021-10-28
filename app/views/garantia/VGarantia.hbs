@@ -1,0 +1,124 @@
+<br>
+{{#if error}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{error}}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+{{#if post}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Registro Correctamente!</h4>
+    <p>Garantia {{post.tipo}}, detalle {{post.detalle}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if put}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Modifico Correctamente!</h4>
+    <p>Garantia {{put.tipo}}, detalle {{put.detalle}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if _delete}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Elimino Correctamente!</h4>
+    <p>Garantia {{_delete.tipo}}, detalle {{_delete.detalle}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if entity}}
+<div class="card border-warning text-warning">
+    <div class="card-header fw-bold">
+        Modificar
+    </div>
+    <div class="card-body">
+        <form action="/garantia/modificar/{{entity.codigo}}?_method=PUT" method="post" id="modal-create-update">
+            <input type="hidden" name="_method" value="PUT">
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" name="tipo" id="tipo" aria-describedby="helpId"
+                    placeholder="Telefono" required value="{{entity.tipo}}">
+            </div>
+            <div class="mb-3">
+                <label for="detalle" class="form-label">Detalle</label>
+                <input type="text" class="form-control" name="detalle" id="detalle" aria-describedby="helpId"
+                    placeholder="Telefono Samsung gama media" value="{{entity.detalle}}" required>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+            <a href="/garantia" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+{{else}}
+<div class="card text-success">
+    <div class="card-header fw-bold">
+        Nuevo +
+    </div>
+    <div class="card-body">
+        <form action="/garantia/crear" method="post" id="modal-create-update">
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" name="tipo" id="tipo" aria-describedby="helpId"
+                    placeholder="Telefono" required value="{{entity.tipo}}">
+            </div>
+            <div class="mb-3">
+                <label for="detalle" class="form-label">Detalle</label>
+                <input type="detalle" class="form-control" name="detalle" id="detalle" aria-describedby="helpId"
+                    placeholder="Telefono Samsung gama media" value="{{entity.detalle}}" required>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+        </form>
+    </div>
+</div>
+{{/if}}
+<br>
+<br>
+<div class="card">
+    <div class="card-header text-success fw-bold">
+        Garantias
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cod</th>
+                        <th>Tipo</th>
+                        <th>Detalle</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each list}}
+                    <tr>
+                        <td>{{codigo}}</td>
+                        <td>{{tipo}}</td>
+                        <td>{{detalle}}</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="">
+                                <form action="/garantia/{{codigo}}" method="get">
+                                    <button type="submit" class="btn btn-outline-warning" data-bs-toggle="collapse "
+                                        data-bs-target="#collapseExample" aria-expanded="false"
+                                        aria-controls="collapseExample">
+                                        Editar
+                                    </button>
+                                </form>
+
+                                <form action="/garantia/eliminar/{{codigo}}?_method=DELETE" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

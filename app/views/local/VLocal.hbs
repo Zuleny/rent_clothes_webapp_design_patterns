@@ -1,0 +1,169 @@
+<br>
+{{#if error}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{error}}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+{{#if post}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Registro Correctamente!</h4>
+    <p>Local {{post.nombre}}, direccion {{post.direccion}}, telefono {{post.telefono}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if put}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Modifico Correctamente!</h4>
+    <p>Local {{put.nombre}}, direccion {{put.direccion}}, telefono {{put.telefono}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if _delete}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Elimino Correctamente!</h4>
+    <p>Local {{_delete.nombre}}, direccion {{_delete.direccion}}, telefono {{_delete.telefono}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+<div class="alert alert-success" role="alert">
+  <h5>Gestión de Local</h5>
+</div>
+
+{{#if entity}}
+<div class="card border-warning text-warning">
+    <div class="card-header fw-bold">
+        Modificar
+    </div>
+    <div class="card-body">
+        <form action="/local/modificar/{{entity.codigo}}?_method=PUT" method="post" id="modal-create-update">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" value="{{entity.id_administrador}}" id="idAdministrador">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId"
+                    placeholder="Sucursal 2 de Agosto" required value="{{entity.nombre}}">
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Direccion</label>
+                <input type="text" class="form-control" name="direccion" id="direccion" aria-describedby="helpId"
+                    placeholder="Avenida 2 de Agosto" value="{{entity.direccion}}">
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="number" min="1" class="form-control" name="telefono" id="telefono"
+                    aria-describedby="helpId" placeholder="76627873" value="{{entity.telefono}}">
+            </div>
+            <div class="mb-3">
+                <label for="id_administrador" class="form-label">Administrador</label>
+                <select class="form-control" name="id_administrador" id="id_administrador">
+                    {{#each administradorList}}
+                    <option value="{{id}}" id="{{id}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+            <a href="/local" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+{{else}}
+<div class="card text-success">
+    <div class="card-header fw-bold">
+        Nuevo +
+    </div>
+    <div class="card-body">
+        <form action="/local/crear" method="post" id="modal-create-update">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" aria-describedby="helpId"
+                    placeholder="Sucursal 2 de Agosto" required value="{{entity.nombre}}">
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Direccion</label>
+                <input type="direccion" class="form-control" name="direccion" id="direccion" aria-describedby="helpId"
+                    placeholder="Avenida 2 de Agosto" value="{{entity.direccion}}">
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="number" min="1" class="form-control" name="telefono" id="telefono"
+                    aria-describedby="helpId" placeholder="72890152" value="{{entity.telefono}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_administrador" class="form-label">Administrador</label>
+                <select class="form-control" name="id_administrador" id="id_administrador">
+                    {{#each administradorList}}
+                    <option value="{{id}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+        </form>
+    </div>
+</div>
+{{/if}}
+<br>
+<br>
+<div class="card">
+    <div class="card-header text-success fw-bold">
+        Locales
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cod.</th>
+                        <th>Nombre</th>
+                        <th>Direccion</th>
+                        <th>Telefono</th>
+                        <th>Administrador</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each list}}
+                    <tr>
+                        <td>{{codigo}}</td>
+                        <td>{{nombre}}</td>
+                        <td>{{direccion}}</td>
+                        <td>{{telefono}}</td>
+                        <td>{{id_administrador}}</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="">
+                                <form action="/local/{{codigo}}" method="get">
+                                    <button type="submit" class="btn btn-outline-warning" data-bs-toggle="collapse "
+                                        data-bs-target="#collapseExample" aria-expanded="false"
+                                        aria-controls="collapseExample">
+                                        Editar
+                                    </button>
+                                </form>
+
+                                <form action="/local/eliminar/{{codigo}}?_method=DELETE" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function load() {
+        let elementIdAdministrador = document.getElementById("idAdministrador");
+        if( elementIdAdministrador!=null){
+            let id_administrador = elementIdAdministrador.getAttribute("value");
+            document.getElementById(id_administrador).selected = true;
+        }
+    }
+    window.onload = load;
+</script>

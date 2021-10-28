@@ -3,6 +3,8 @@ import {Router} from 'express';
 import {CAdministrador} from './controller/CAdministrador';
 import {CArticulo} from './controller/CArticulo';
 import {CCliente} from './controller/CCliente';
+import {CGarantia} from './controller/CGarantia';
+import {CLocal} from './controller/CLocal';
 
 const router = Router();
 
@@ -29,5 +31,21 @@ router.get('/cliente/:id', cCliente.getById);
 router.post('/cliente/crear', cCliente.postCliente);
 router.put('/cliente/modificar/:id', cCliente.putCliente);
 router.delete('/cliente/eliminar/:id', cCliente.deleteCliente);
+
+// garantia's routes
+let cGarantia: CGarantia = new CGarantia();
+router.get('/garantia', cGarantia.getList);
+router.get('/garantia/:id', cGarantia.getById);
+router.post('/garantia/crear', cGarantia.postGarantia);
+router.put('/garantia/modificar/:id', cGarantia.putGarantia);
+router.delete('/garantia/eliminar/:id', cGarantia.deleteGarantia);
+
+// local's routes
+let cLocal: CLocal = new CLocal();
+router.get('/local', cLocal.getList);
+router.get('/local/:id', cLocal.getById);
+router.post('/local/crear', cLocal.postLocal);
+router.put('/local/modificar/:id', cLocal.putLocal);
+router.delete('/local/eliminar/:id', cLocal.deleteLocal);
 
 export default router;

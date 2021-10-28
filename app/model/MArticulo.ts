@@ -63,6 +63,10 @@ export class MArticulo{
     public create = async (entity: any): Promise<any | null> =>{
         try {
             let response: any = (await this._connection.query(`insert into articulo(nombre, descripcion, precio) values('${entity.nombre}', '${entity.descripcion}', ${entity.precio}) returning*;`)).rows[0];
+            this._codigo = response.codigo;
+            this._nombre = response.nombre;
+            this._descripcion = response.descripcion;
+            this._precio = response.precio;
             return response;
         } catch (error) {
             console.error("Error into MArticulo > create: " + error);
@@ -79,6 +83,9 @@ export class MArticulo{
     public update = async (id: any, data: any): Promise<any> => {
         try {
             let response: any = (await this._connection.query(`update articulo set nombre='${data.nombre}', descripcion='${data.descripcion}', precio='${data.precio}' where codigo=${id} returning *;`)).rows[0];
+            this._nombre = response.nombre;
+            this._descripcion = response.descripcion;
+            this._precio = response.precio;
             return response;
         } catch (error) {
             console.error("Error into MArticulo > update: " + error);
@@ -99,5 +106,21 @@ export class MArticulo{
             console.error("Error into MArticulo > update: " + error);
             return null;
         }
+    }
+
+    get codigo(){
+        return this._codigo;
+    }
+    
+    get nombre(){
+        return this._nombre;
+    }
+
+    get descripcion(){
+        return this._descripcion;
+    }
+
+    get precio(){
+        return this._precio;
     }
 }

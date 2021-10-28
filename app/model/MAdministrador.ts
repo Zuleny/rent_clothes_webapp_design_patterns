@@ -65,6 +65,11 @@ export class MAdministrador{
     public create = async (entity: any): Promise<any | null> =>{
         try {
             let response: any = (await this._connection.query(`insert into administrador(nombre, email, contrasenia, telefono) values('${entity.nombre}', '${entity.email}', '${entity.contrasenia}', '${entity.telefono}') returning*;`)).rows[0];
+            this._id = response.id;
+            this._nombre = response.nombre;
+            this._email = response.email;
+            this._contrasenia = response.contrasenia;
+            this._telefono = response.telefono;
             return response;
         } catch (error) {
             console.error("Error into MAdministrador > create: " + error);
@@ -81,6 +86,10 @@ export class MAdministrador{
     public update = async (id: any, data: any): Promise<any> => {
         try {
             let response: any = (await this._connection.query(`update administrador set nombre='${data.nombre}', email='${data.email}', contrasenia='${data.contrasenia}', telefono='${data.telefono}' where id=${id} returning *;`)).rows[0];
+            this._nombre = response.nombre;
+            this._email = response.email;
+            this._contrasenia = response.contrasenia;
+            this._telefono = response.telefono;
             return response;
         } catch (error) {
             console.error("Error into MAdministrador > update: " + error);
@@ -101,5 +110,25 @@ export class MAdministrador{
             console.error("Error into MAdministrador > update: " + error);
             return null;
         }
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get nombre(){
+        return this._nombre;
+    }
+
+    get email() {
+        return this._email;
+    }
+
+    get contrasenia() {
+        return this._contrasenia;
+    }
+
+    get telefono() {
+        return this._telefono;
     }
 }
