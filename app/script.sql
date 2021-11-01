@@ -1,4 +1,4 @@
-CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'mycontraseniaaqui';
+CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'b62Zx8v6-fea7-4a86-Kd33-107d0865593F';
 
 CREATE DATABASE arquitectura_sw with owner=arquitectura_sw encoding='UTF8' tablespace=pg_default CONNECTION LIMIT=-1;
 
@@ -47,15 +47,10 @@ create table NotaAlquiler(
 	fecha_devolucion date not null,
 	total decimal(12,2) not null,
 	codigo_local integer not null,
+	ci_cliente integer not null,
 	foreign key(codigo_local) references Local(codigo)
-);
-
-create table NotaDevolucion(
-	nro serial not null primary key,
-	fecha date not null,
-	monto_adicional decimal(12,2) not null,
-	nro_notaalquiler integer not null,
-	foreign key(nro_notaalquiler) references NotaAlquiler(nro)
+	on update cascade on delete cascade,
+	foreign key(ci_cliente) references Cliente(ci)
 	on update cascade on delete cascade
 );
 
@@ -92,6 +87,7 @@ create table NotaAlquilerArticulo(
 	on update cascade on delete cascade,
 	primary key(nro_notaalquiler, codigo_articulo)
 );
+ 
 
 insert into Administrador(nombre, email, contrasenia, telefono) values('Zuleny Cruz', 'zuleny.cr@gmail.com', '11235813', '76627871');
 insert into Administrador(nombre, email, contrasenia, telefono) values('Pedro Mamani', 'pedro@gmail.com', '11235813', '76627879');
@@ -113,13 +109,9 @@ insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursa
 insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursal Virgen de Cotoca', 'Avenida Virgen de Cotocar y 4to Anillo', '33472987', 2);
 insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursal Santos Dumon', 'Avenida Santos Dumont y 3er Anillo', '33422987', 3);
 
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local) values('Alquiler de tipoy y vestido de novia', '2021/10/22', '2021/10/26', 350.5, 1);
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local) values('Alquiler de traje tobas', '2021/10/22', '2021/10/26', 70.5, 2);
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local) values('Alquiler de traje varon', '2021/10/22', '2021/10/26', 500, 3);
-
-insert into NotaDevolucion(fecha, monto_adicional, nro_notaalquiler) values('2021/10/25', 55.50, 1);
-insert into NotaDevolucion(fecha, monto_adicional, nro_notaalquiler) values('2021/10/26', 100.50, 2);
-insert into NotaDevolucion(fecha, monto_adicional, nro_notaalquiler) values('2021/10/27', 150.50, 3);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de tipoy y vestido de novia', '2021/10/22', '2021/10/26', 350.5, 1, 9710836);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de traje tobas', '2021/10/22', '2021/10/26', 70.5, 2, 8724516);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de traje varon', '2021/10/22', '2021/10/26', 500, 3, 9710830);
 
 insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(1, 1, 1, 'Telefono Sansumg A0 color rojo');
 insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(2, 2, 1, 'Anillo de 28 kilates con diamantina');

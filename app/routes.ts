@@ -5,6 +5,7 @@ import {CArticulo} from './controller/CArticulo';
 import {CCliente} from './controller/CCliente';
 import {CGarantia} from './controller/CGarantia';
 import {CLocal} from './controller/CLocal';
+import {CNotaAlquiler} from './controller/CNotaAlquiler';
 
 const router = Router();
 
@@ -47,5 +48,13 @@ router.get('/local/:id', cLocal.getById);
 router.post('/local/crear', cLocal.postLocal);
 router.put('/local/modificar/:id', cLocal.putLocal);
 router.delete('/local/eliminar/:id', cLocal.deleteLocal);
+
+// notaalquiler's routes
+let cNotaAlquiler: CNotaAlquiler = new CNotaAlquiler();
+router.get('/notaalquiler', cNotaAlquiler.getList);
+router.get('/notaalquiler/:id', cNotaAlquiler.getById);
+router.post('/notaalquiler/crear', cNotaAlquiler.postNotaAlquiler);
+router.put('/notaalquiler/modificar/:id', cNotaAlquiler.putNotaAlquiler);
+router.delete('/notaalquiler/eliminar/:id', cNotaAlquiler.deleteNotaAlquiler);
 
 export default router;

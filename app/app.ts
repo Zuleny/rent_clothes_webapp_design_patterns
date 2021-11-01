@@ -35,7 +35,10 @@ export class App{
             layoutsDir: path.join(this.app.get('views'), 'layouts'),
             partialsDir: path.join(this.app.get('views'), 'partials'),
             extname: '.hbs',
-            defaultLayout: 'layout'
+            defaultLayout: 'layout',
+            helpers: {
+                multiply: function (number1:number, number2: number) { return number1*number2; }
+            }
         }));
         this.app.set('view engine', '.hbs');
     }

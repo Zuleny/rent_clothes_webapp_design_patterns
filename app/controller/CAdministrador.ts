@@ -31,7 +31,7 @@ export class CAdministrador{
     }
 
     /**
-     * get a specific administrator
+     * get a specific administrador
      * @param request HTTP request
      * @param response HTTP response
      */
@@ -47,7 +47,7 @@ export class CAdministrador{
     }
     
     /**
-     * register a new administrator
+     * register a new administrador
      * @param request HTTP request
      * @param response HTTP response
      */

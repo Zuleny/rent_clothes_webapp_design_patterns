@@ -1,0 +1,304 @@
+<br>
+{{#if error}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{error}}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+{{#if post}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Registro Correctamente!</h4>
+    <p>Nota Alquiler N° {{post.nro}}, {{post.concepto}}, fecha entrega {{post.fecha_entrega}}, fecha devolución
+        {{post.fecha_devolucion}}, total {{post.total}}, codigo local {{post.codigo_local}}, ci cliente
+        {{post.ci_cliente}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if put}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Modifico Correctamente!</h4>
+    <p>Nota Alquiler N° {{put.nro}}, concepto {{put.concepto}}, fecha entrega {{put.fecha_entrega}}, fecha devolución
+        {{put.fecha_devolucion}}, total {{put.total}}, codigo local {{put.codigo_local}}, ci cliente {{put.ci_cliente}}
+    </p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+{{#if _delete}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Se Elimino Correctamente!</h4>
+    <p>Nota Alquiler N° {{_delete.nro}}, {{_delete.concepto}}, fecha entrega {{_delete.fecha_entrega}}, fecha devolución
+        {{_delete.fecha_devolucion}}, total {{_delete.total}}, codigo local {{_delete.codigo_local}}, ci cliente
+        {{_delete.ci_cliente}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+<div class="alert alert-success" role="alert">
+    <h5>Gestión de Nota Alquiler</h5>
+</div>
+
+{{#if entity}}
+<div class="card border-warning text-warning">
+    <div class="card-header fw-bold">
+        Modificar
+    </div>
+    <div class="card-body">
+        <form action="/notaalquiler/modificar/{{entity.nro}}?_method=PUT" method="post">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" value="{{entity.codigo_local}}" id="codigo_local">
+            <input type="hidden" value="{{entity.ci_cliente}}" id="ci_cliente">
+            <div class="mb-3">
+                <label for="concepto" class="form-label">Concepto</label>
+                <input type="text" class="form-control" name="concepto" id="concepto" aria-describedby="helpId"
+                    placeholder="Alquiler de tipoy y vestido de novia" required value="{{entity.concepto}}">
+            </div>
+            <div class="mb-3">
+                <label for="fecha_devolucion" class="form-label">Fecha devolucion</label>
+                <input type="date" class="form-control" name="fecha_devolucion" id="fecha_devolucion"
+                    aria-describedby="helpId" value="{{entity.fecha_devolucion}}">
+            </div>
+            <div class="mb-3">
+                <label for="codigo_local" class="form-label">Local</label>
+                <select class="form-control" name="codigo_local" id="codigo_local">
+                    {{#each localList}}
+                    <option value="{{codigo}}" id="{{codigo}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="ci_cliente" class="form-label">Cliente</label>
+                <select class="form-control" name="ci_cliente" id="ci_cliente">
+                    {{#each clienteList}}
+                    <option value="{{ci}}" id="{{ci}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="total" class="form-label">Total</label>
+                <input type="number" min="1" class="form-control" name="total" id="total" aria-describedby="helpId"
+                    value="{{entity.total}}" disabled>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+            <a href="/notaalquiler" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+{{else}}
+    {{#if post}}
+
+    {{else}}
+    
+    {{/if}}
+<div class="card text-success">
+    <div class="card-header fw-bold">
+        Nuevo +
+    </div>
+    <div class="card-body">
+        <form action="/notaalquiler/crear" method="post">
+            <div class="mb-3">
+                <label for="concepto" class="form-label">Concepto</label>
+                <input type="text" class="form-control" name="concepto" id="concepto"
+                    placeholder="Alquiler de tipoy y vestido de novia" required>
+            </div>
+            <div class="mb-3">
+                <label for="fecha_devolucion" class="form-label">Fecha Devolucion</label>
+                <input type="date" class="form-control" name="fecha_devolucion" id="fecha_devolucion"
+                    placeholder="Avenida 2 de Agosto">
+            </div>
+            <div class="mb-3">
+                <label for="codigo_local" class="form-label">Local</label>
+                <select class="form-control" name="codigo_local">
+                    {{#each localList}}
+                    <option value="{{codigo}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="ci_cliente" class="form-label">Cliente</label>
+                <select class="form-control" name="ci_cliente">
+                    {{#each clienteList}}
+                    <option value="{{ci}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+        </form>
+    </div>
+</div>
+    {{#if post}}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-success">
+                <div class="card-header fw-bold">
+                    Articulo
+                </div>
+                <form action="/notaalquiler_articulo/crear" method="post">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="codigo_articulo" class="form-label">Articulo</label>
+                            <select class="form-control" name="codigo_articulo" id="codigo_articulo">
+                                {{#each articuloList}}
+                                <option value="{{codigo}}">{{nombre}} (Bs. {{precio}})</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidad_articulo" class="form-label">Cantidad</label>
+                            <input type="number" min="1" class="form-control" id="cantidad_articulo"
+                                name="cantidad_articulo" placeholder="2" required>
+                        </div>
+                        <input name="" id="" class="btn btn-success" type="button" onclick="addArticulos()" value="Agregar">
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="overflow-scroll" style="max-width: 620px; max-height: 280px;">
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Subheading</div>
+                            Cras justo odio
+                        </div>
+                        <form action="" method="get">
+                            <button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                        </form>
+                        
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-success">
+                <div class="card-header fw-bold">
+                    Articulo
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="codigo_articulo" class="form-label">Articulo</label>
+                        <select class="form-control" name="codigo_articulo" id="codigo_articulo">
+                            {{#each articuloList}}
+                            <option value="{{codigo}}">{{nombre}} (Bs. {{precio}})</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidad_articulo" class="form-label">Cantidad</label>
+                        <input type="number" min="1" class="form-control" id="cantidad_articulo" name="cantidad_articulo"
+                            placeholder="2" required>
+                    </div>
+                    <input name="" id="" class="btn btn-success" type="button" onclick="addArticulos()" value="Agregar">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="overflow-scroll" style="max-width: 620px; max-height: 280px;">
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Subheading</div>
+                            Cras justo odio
+                        </div>
+                        <form action="" method="get">
+                            <button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                        </form>
+                        
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+{{/if}}
+<br><br>
+<div class="card">
+    <div class="card-header text-success fw-bold">
+        Nota Alquileres
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nro.</th>
+                        <th>Concepto</th>
+                        <th>Entrega</th>
+                        <th>Devolucion</th>
+                        <th>Local</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each list}}
+                    <tr>
+                        <td>{{nro}}</td>
+                        <td>{{concepto}}</td>
+                        <td>{{fecha_entrega}}</td>
+                        <td>{{fecha_devolucion}}</td>
+                        <td>{{codigo_local}}</td>
+                        <td>{{ci_cliente}}</td>
+                        <td>{{total}}</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="">
+                                <form action="/notaalquiler/{{nro}}" method="get">
+                                    <button type="submit" class="btn btn-outline-warning" data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </form>
+
+                                <form action="/notaalquiler/eliminar/{{nro}}?_method=DELETE" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-outline-danger" data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                <a class="btn btn-outline-secondary" href="/notaalquiler_articulo/{{nro}}"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Agregar Prendas"><i
+                                        class="bi bi-bag-plus"></i></a>
+                                <a class="btn btn-outline-secondary" href="/notaalquiler_garantia/{{nro}}"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Agregar Garantias"><i
+                                        class="bi bi-archive"></i></a>
+                                <a class="btn btn-outline-success" href="/notadevolucion/{{nro}}"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Devolver"><i
+                                        class="bi bi-arrow-return-left"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function load() {
+        let elementCodigoLocal = document.getElementById("codigo_local");
+        if (elementCodigoLocal != null) {
+            let codigoLocal = elementCodigoLocal.getAttribute("value");
+            document.getElementById(codigoLocal).selected = true;
+        }
+
+        let elementCiCliente = document.getElementById("ci_cliente");
+        if (elementCiCliente != null) {
+            let ciCliente = elementCiCliente.getAttribute("value");
+            document.getElementById(ciCliente).selected = true;
+        }
+    }
+    window.onload = load;
+</script>
