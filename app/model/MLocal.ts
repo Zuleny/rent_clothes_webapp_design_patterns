@@ -4,14 +4,14 @@ export class MLocal{
     /**
      * Attributes
      */
-     private _codigo: number;
-     private _nombre: string;
-     private _direccion: string;
-     private _telefono: number;
-     private _idAdministrador: number;
-     private _connection: Connection;
+    private _codigo: number;
+    private _nombre: string;
+    private _direccion: string;
+    private _telefono: number;
+    private _idAdministrador: number;
+    private _connection: Connection;
 
-     /**
+    /**
       * Method constructor of Local 
       * @param id unique identifier to local 
       * @param nombre name of local 
@@ -19,20 +19,20 @@ export class MLocal{
       * @param telefono cellphone number of local 
       * @param idAdministrador the id of the administrador user
       */
-     public constructor(codigo: number = 0,nombre:string = '', direccion: string = '', telefono: number = 0.00, idAdministrador: number = 0) {
-         this._codigo = codigo;
-         this._nombre = nombre;
-         this._direccion = direccion;
-         this._telefono = telefono;
-         this._idAdministrador = idAdministrador;
-         this._connection = Connection.getInstance();
-     }
+    public constructor(codigo: number = 0,nombre:string = '', direccion: string = '', telefono: number = 0.00, idAdministrador: number = 0) {
+        this._codigo = codigo;
+        this._nombre = nombre;
+        this._direccion = direccion;
+        this._telefono = telefono;
+        this._idAdministrador = idAdministrador;
+        this._connection = Connection.getInstance();
+    }
 
-     /**
+    /**
       * get all locales
       * @returns the list of all locales
       */
-     public getAll = async (): Promise<Array<any>> => {
+    public getAll = async (): Promise<Array<any>> => {
         try {
             let list: Array<any> = (await this._connection.query('select * from local;')).rows;
             return list;
@@ -126,5 +126,9 @@ export class MLocal{
 
     get telefono(){
         return this._telefono;
+    }
+
+    get idAdministrador(){
+        return this._idAdministrador;
     }
 }

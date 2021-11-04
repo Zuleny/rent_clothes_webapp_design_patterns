@@ -136,7 +136,7 @@ export class CNotaAlquiler{
      * @param request HTTP request
      * @param response HTTP response
      */
-    public getAllArticuloGarantia = async (request: Request, response: Response): Promise<void> =>{
+    public getListArticuloGarantia = async (request: Request, response: Response): Promise<void> =>{
         try {
             let nro = request.params.nro;
             let notaalquiler = await this._mNotaAlquiler.getById(nro);
@@ -149,7 +149,7 @@ export class CNotaAlquiler{
 
             this._vNotaAlquiler.renderViewArticuloGarantia(response, {notaalquiler, notaAlquilerArticulo, articuloList, notaAlquilerGarantia, garantiaList});
         } catch (error) {
-            console.log("Error in CNotaAlquiler > getAllArticuloGarantia");
+            console.log("Error in CNotaAlquiler > getListArticuloGarantia");
             this._vNotaAlquiler.renderView(response, {error: "Error al obtener los articulos y garantias"});
         }
     }

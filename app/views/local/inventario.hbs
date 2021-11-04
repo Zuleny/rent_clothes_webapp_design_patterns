@@ -1,0 +1,113 @@
+<br>
+{{#if error}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{error}}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+<div class="alert alert-success" role="alert">
+    <h5>Local {{local.nombre}}</h5>
+    Cod.
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{local.codigo}}
+    <br>
+    Direccion &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{local.direccion}}
+    <br>
+    Telefono &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{local.telefono}}
+    <br>
+    Administrador
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{local.id_administrador}}
+</div>
+<br>
+{{#if inventario}}
+<div class="card border-warning text-warning">
+    <div class="card-header fw-bold">
+        Inventario
+    </div>
+    <form action="/local/inventario/modificar/{{inventario.codigo_local}}/{{inventario.codigo_articulo}}?_method=PUT"
+        method="post">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="codigo_articulo" class="form-label">Articulo</label>
+                <input type="text" class="form-control" name="nombre" required value="{{inventario.nombre}}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Cantidad</label>
+                <input type="number" min="1" class="form-control" id="stock" name="stock" placeholder="2"
+                    value="{{inventario.stock}}" required>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Guardar">
+        </div>
+    </form>
+</div>
+{{else}}
+<div class="card text-success">
+    <div class="card-header fw-bold">
+        Inventario
+    </div>
+    <form action="/local/inventario/crear" method="post">
+        <input type="hidden" name="codigo_local" value="{{local.codigo}}">
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="codigo_articulo" class="form-label">Articulo</label>
+                <select class="form-control" name="codigo_articulo" id="codigo_articulo">
+                    {{#each articuloList}}
+                    <option value="{{codigo}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Cantidad</label>
+                <input type="number" min="1" class="form-control" id="stock" name="stock" placeholder="2" required>
+            </div>
+            <input name="" id="" class="btn btn-success" type="submit" value="Agregar">
+        </div>
+    </form>
+</div>
+{{/if}}
+<br>
+<div class="card">
+    <div class="card-header text-success fw-bold">
+        Lista de Articulos del local
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cod.</th>
+                        <th>Articulo</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each inventarioList}}
+                    <tr>
+                        <td>{{codigo_articulo}}</td>
+                        <td>{{nombre}}</td>
+                        <td>{{precio}}</td>
+                        <td>{{stock}}</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="">
+                                <form action="/local/inventario/{{codigo_local}}/{{codigo_articulo}}" method="get">
+                                    <button class="btn btn-outline-warning btn-sm" type="submit">Editar</button>
+                                </form>
+                                <form
+                                    action="/local/inventario/eliminar/{{codigo_local}}/{{codigo_articulo}}?_method=DELETE"
+                                    method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="btn btn-outline-danger btn-sm" type="submit">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br><br>

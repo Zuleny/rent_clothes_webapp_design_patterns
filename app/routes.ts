@@ -9,6 +9,10 @@ import {CNotaAlquiler} from './controller/CNotaAlquiler';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+    res.render('home');
+});
+
 //administrador's routes
 let cAdministrador: CAdministrador = new CAdministrador();
 router.get('/administrador', cAdministrador.getList);
@@ -49,6 +53,12 @@ router.post('/local/crear', cLocal.postLocal);
 router.put('/local/modificar/:id', cLocal.putLocal);
 router.delete('/local/eliminar/:id', cLocal.deleteLocal);
 
+router.get('/local/inventario/:cod_local', cLocal.getListInventario);
+router.get('/local/inventario/:cod_local/:cod_articulo', cLocal.getListInventarioById);
+router.post('/local/inventario/crear', cLocal.postInventario);
+router.put('/local/inventario/modificar/:cod_local/:cod_articulo', cLocal.putInventario);
+router.delete('/local/inventario/eliminar/:cod_local/:cod_articulo', cLocal.deleteInventario);
+
 // notaalquiler's routes
 let cNotaAlquiler: CNotaAlquiler = new CNotaAlquiler();
 router.get('/notaalquiler', cNotaAlquiler.getList);
@@ -57,7 +67,7 @@ router.post('/notaalquiler/crear', cNotaAlquiler.postNotaAlquiler);
 router.put('/notaalquiler/modificar/:id', cNotaAlquiler.putNotaAlquiler);
 router.delete('/notaalquiler/eliminar/:id', cNotaAlquiler.deleteNotaAlquiler);
 
-router.get('/notaalquiler/articulo_garantia/:nro', cNotaAlquiler.getAllArticuloGarantia);
+router.get('/notaalquiler/articulo_garantia/:nro', cNotaAlquiler.getListArticuloGarantia);
 router.post('/notaalquiler/articulo/crear', cNotaAlquiler.postNotaAlquilerArticulo);
 router.delete('/notaalquiler/articulo/eliminar/:nro/:cod', cNotaAlquiler.deleteNotaAlquilerArticulo);
 router.post('/notaalquiler/garantia/crear', cNotaAlquiler.postNotaAlquilerGarantia);

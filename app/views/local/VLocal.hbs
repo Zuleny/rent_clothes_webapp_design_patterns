@@ -5,13 +5,6 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
-{{#if post}}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <h4 class="alert-heading">Se Registro Correctamente!</h4>
-    <p>Local {{post.nombre}}, direccion {{post.direccion}}, telefono {{post.telefono}}</p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{{/if}}
 
 {{#if put}}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -148,6 +141,7 @@
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-outline-danger">Borrar</button>
                                 </form>
+                                <a class="btn btn-outline-secondary" href="/local/inventario/{{codigo}}">inventario</a>
                             </div>
                         </td>
                     </tr>
