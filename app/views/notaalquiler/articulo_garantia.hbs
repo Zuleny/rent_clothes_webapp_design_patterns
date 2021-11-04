@@ -1,0 +1,158 @@
+<br>
+{{#if error}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{error}}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/if}}
+
+<div class="alert alert-success" role="alert">
+    <h5>Nota Alquiler N° {{notaalquiler.nro}}</h5>
+    Concepto
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{notaalquiler.concepto}}
+    <br>
+    Fecha Entrega &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{notaalquiler.fecha_entrega}}
+    <br>
+    Fecha Devolucion &nbsp;&nbsp;{{notaalquiler.fecha_devolucion}}
+    <br>
+    Local
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{notaalquiler.codigo_local}}
+    <br>
+    Cliente
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{notaalquiler.ci_cliente}}
+    <br>
+    Total
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {{notaalquiler.total}}
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card text-success">
+            <div class="card-header fw-bold">
+                Articulo
+            </div>
+            <form action="/notaalquiler/articulo/crear" method="post">
+                <input type="hidden" name="nro_notaalquiler" value="{{notaalquiler.nro}}">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="codigo_articulo" class="form-label">Articulo</label>
+                        <select class="form-control" name="codigo_articulo" id="codigo_articulo">
+                            {{#each articuloList}}
+                            <option value="{{codigo}}">{{nombre}} (Bs. {{precio}})</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" min="1" class="form-control" id="cantidad" name="cantidad" placeholder="2"
+                            required>
+                    </div>
+                    <input name="" id="" class="btn btn-success" type="submit" value="Agregar">
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="overflow-scroll" style="max-width: 620px; max-height: 280px;">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Articulo</th>
+                        <th>Cant.</th>
+                        <th>Precio</th>
+                        <th>SubTotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each notaAlquilerArticulo}}
+                    <tr>
+                        <td>{{nombre}}</td>
+                        <td>{{cantidad}}</td>
+                        <td>{{precio}}</td>
+                        <td>{{multiply cantidad precio}}</td>
+                        <td>
+                            <form
+                                action="/notaalquiler/articulo/eliminar/{{nro_notaalquiler}}/{{codigo_articulo}}?_method=DELETE"
+                                method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br><br>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card text-success">
+            <div class="card-header fw-bold">
+                Garantias
+            </div>
+            <form action="/notaalquiler/garantia/crear" method="post">
+                <input type="hidden" name="nro_notaalquiler" value="{{notaalquiler.nro}}">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="codigo_articulo" class="form-label">Garantias</label>
+                        <select class="form-control" name="codigo_garantia">
+                            {{#each garantiaList}}
+                            <option value="{{codigo}}">{{tipo}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" min="1" class="form-control" id="cantidad" name="cantidad" placeholder="2"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="detalle_especifico" class="form-label">Detalle</label>
+                        <input type="text" class="form-control" name="detalle_especifico"
+                            placeholder="telefono sansumg color negro">
+                    </div>
+                    <input name="" id="" class="btn btn-success" type="submit" value="Agregar">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="overflow-scroll" style="max-width: 620px; max-height: 280px;">
+            <table class="table table-success table-bordered">
+                <thead>
+                    <tr>
+                        <th>Garantia</th>
+                        <th>Cant.</th>
+                        <th>Detalle</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each notaAlquilerGarantia}}
+                    <tr>
+                        <td>{{tipo}}</td>
+                        <td>{{cantidad}}</td>
+                        <td>{{detalle_especifico}}</td>
+                        <td>
+                            <form
+                                action="/notaalquiler/garantia/eliminar/{{nro_notaalquiler}}/{{codigo_garantia}}?_method=DELETE"
+                                method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

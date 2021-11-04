@@ -85,18 +85,7 @@ export class CNotaAlquiler{
         try {
             let { concepto, fecha_devolucion, codigo_local, ci_cliente } = request.body;
             let post = await this._mNotaAlquiler.create({concepto, fecha_devolucion, codigo_local, ci_cliente});
-            let list = await this._mNotaAlquiler.getAll();
-
-            let localList = await this._mLocal.getAll();
-            let clienteList = await this._mCliente.getAll();
-
-            let notaAlquilerArticulo = await this._mNotaAlquilerArticulo.getAll(post.nro);
-            let articuloList = await this._mArticulo.getAll();
-
-            let notaAlquilerGarantia = await this._mNotaAlquilerGarantia.getAll(post.nro);
-            let garantiaList = await this._mGarantia.getAll();
-            
-            this._vNotaAlquiler.renderView(response,{list, post, localList, clienteList, notaAlquilerArticulo, articuloList, notaAlquilerGarantia, garantiaList, });
+            this._vNotaAlquiler.redirectViewArticuloGarantia(response, post.nro);
         } catch (error) {
             console.log("Error into CNotaAlquiler > postNotaAlquiler", error);
             this._vNotaAlquiler.renderView(response,{error: "Error al registrar al nota alquiler"});
@@ -139,6 +128,95 @@ export class CNotaAlquiler{
         } catch (error) {
             console.log("Error into CNotaAlquiler > deleteNotaAlquiler", error);
             this._vNotaAlquiler.renderView(response, {error: "Error al eliminar al nota alquiler"});
+        }
+    }
+
+    /**
+     * get the list of all notaalquilerarticulo and notaalquilergarantia
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public getAllArticuloGarantia = async (request: Request, response: Response): Promise<void> =>{
+        try {
+            let nro = request.params.nro;
+            let notaalquiler = await this._mNotaAlquiler.getById(nro);
+
+            let notaAlquilerArticulo = await this._mNotaAlquilerArticulo.getAll(nro);
+            let articuloList = await this._mArticulo.getAll();
+
+            let notaAlquilerGarantia = await this._mNotaAlquilerGarantia.getAll(nro);
+            let garantiaList = await this._mGarantia.getAll();
+
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, {notaalquiler, notaAlquilerArticulo, articuloList, notaAlquilerGarantia, garantiaList});
+        } catch (error) {
+            console.log("Error in CNotaAlquiler > getAllArticuloGarantia");
+            this._vNotaAlquiler.renderView(response, {error: "Error al obtener los articulos y garantias"});
+        }
+    }
+
+    /**
+     * register a new notaalquilerarticulo
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public postNotaAlquilerArticulo = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let { nro_notaalquiler, codigo_articulo, cantidad } = request.body;
+            let postArticulo = await this._mNotaAlquilerArticulo.create({nro_notaalquiler, codigo_articulo, cantidad});
+            this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro_notaalquiler);
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > postNotaAlquilerArticulo", error);
+            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar articulos en la nota de alquiler"});
+        }
+    }
+
+    /**
+     * delete a specific notaalquilerarticulo
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public deleteNotaAlquilerArticulo = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let nro = request.params.nro;
+            let codigoArticulo = request.params.cod;
+            let deleteArticulo = await this._mNotaAlquilerArticulo.delete(nro, codigoArticulo);
+            this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro);
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > deleteNotaAlquilerArticulo", error);
+            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al eliminar articulo de la nota de alquiler"});
+        }
+    }
+
+    /**
+     * register a new notaalquilergarantia
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public postNotaAlquilerGarantia = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let { nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico } = request.body;
+            let postArticulo = await this._mNotaAlquilerGarantia.create({nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico});
+            this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro_notaalquiler);
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > postNotaAlquilerGarantia", error);
+            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar garantia en la nota de alquiler"});
+        }
+    }
+
+    /**
+     * delete a specific notaalquilergarantia
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public deleteNotaAlquilerGarantia = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let nro = request.params.nro;
+            let codigoArticulo = request.params.cod;
+            let deleteArticulo = await this._mNotaAlquilerGarantia.delete(nro, codigoArticulo);
+            this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro);
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > deleteNotaAlquilerGarantia", error);
+            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar garantias en la nota de alquiler"});
         }
     }
 }

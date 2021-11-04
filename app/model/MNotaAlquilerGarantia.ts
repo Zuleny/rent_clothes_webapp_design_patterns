@@ -63,7 +63,7 @@ export class MNotaAlquilerGarantia{
      */
     public create = async (entity: any): Promise<any | null> =>{
         try {
-            let response: any = (await this._connection.query(`insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(${entity.nro_notaalquiler}, ${entity.codigo_garantia}, ${entity.cantidad}, ${entity.detalle_especifico}) returning*;`)).rows[0];
+            let response: any = (await this._connection.query(`insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(${entity.nro_notaalquiler}, ${entity.codigo_garantia}, ${entity.cantidad}, '${entity.detalle_especifico}') returning*;`)).rows[0];
             this._nro_notaalquiler = response.nro_notaalquiler;
             this._codigo_garantia = response.codigo_garantia;
             this._cantidad = response.cantidad;

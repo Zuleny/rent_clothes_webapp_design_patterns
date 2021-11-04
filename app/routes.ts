@@ -57,4 +57,9 @@ router.post('/notaalquiler/crear', cNotaAlquiler.postNotaAlquiler);
 router.put('/notaalquiler/modificar/:id', cNotaAlquiler.putNotaAlquiler);
 router.delete('/notaalquiler/eliminar/:id', cNotaAlquiler.deleteNotaAlquiler);
 
+router.get('/notaalquiler/articulo_garantia/:nro', cNotaAlquiler.getAllArticuloGarantia);
+router.post('/notaalquiler/articulo/crear', cNotaAlquiler.postNotaAlquilerArticulo);
+router.delete('/notaalquiler/articulo/eliminar/:nro/:cod', cNotaAlquiler.deleteNotaAlquilerArticulo);
+router.post('/notaalquiler/garantia/crear', cNotaAlquiler.postNotaAlquilerGarantia);
+router.delete('/notaalquiler/garantia/eliminar/:nro/:cod', cNotaAlquiler.deleteNotaAlquilerGarantia);
 export default router;
