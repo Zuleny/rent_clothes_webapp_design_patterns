@@ -1,4 +1,4 @@
-CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'b62Zx8v6-fea7-4a86-Kd33-107d0865593F';
+CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'mypass';
 
 CREATE DATABASE arquitectura_sw with owner=arquitectura_sw encoding='UTF8' tablespace=pg_default CONNECTION LIMIT=-1;
 
@@ -88,6 +88,34 @@ create table NotaAlquilerArticulo(
 	primary key(nro_notaalquiler, codigo_articulo)
 );
  
+
+create or replace function insert_notaalquiler_articulo()returns trigger as
+$BODY$
+declare precio decimal(12,2) = (select precio from articulo where codigo = new.codigo_articulo);
+begin
+	update notaalquiler set total = total+(new.cantidad * precio) where nro = new.nro_notaalquiler;
+	return new;
+end $BODY$ language plpgsql;
+
+create trigger t_insert_notaalquiler_articulo after insert 
+on notaalquilerarticulo
+for each row
+	execute procedure insert_notaalquiler_articulo();
+
+
+create or replace function delete_notaalquiler_articulo()returns trigger as
+$BODY$
+declare precio decimal(12,2) = (select precio from articulo where codigo =old.codigo_articulo);
+begin
+	update notaalquiler set total = total-(old.cantidad * precio) where nro = old.nro_notaalquiler;
+	return old;
+end $BODY$ language plpgsql;
+
+create trigger t_delete_notaalquiler_articulo after delete
+on notaalquilerarticulo
+for each row
+	execute procedure delete_notaalquiler_articulo();
+
 
 insert into Administrador(nombre, email, contrasenia, telefono) values('Zuleny Cruz', 'zuleny.cr@gmail.com', '11235813', '76627871');
 insert into Administrador(nombre, email, contrasenia, telefono) values('Pedro Mamani', 'pedro@gmail.com', '11235813', '76627879');
