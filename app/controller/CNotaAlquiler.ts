@@ -1,15 +1,20 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 
-import {MNotaAlquiler} from '../model/MNotaAlquiler';
-import {VNotaAlquiler} from '../views/notaalquiler/VNotaAlquiler';
+import { MNotaAlquiler } from '../model/notaalquiler/MNotaAlquiler';
+import { VNotaAlquiler } from '../views/notaalquiler/VNotaAlquiler';
 import { MLocal } from "../model/MLocal";
-import {MCliente} from "../model/MCliente";
-import {MArticulo} from '../model/MArticulo';
-import {MGarantia} from '../model/MGarantia';
+import { MCliente } from "../model/MCliente";
+import { MArticulo } from '../model/MArticulo';
+import { MGarantia } from '../model/MGarantia';
 import { MNotaAlquilerArticulo } from "../model/MNotaAlquilerArticulo";
-import {MNotaAlquilerGarantia} from "../model/MNotaAlquilerGarantia";
+import { MNotaAlquilerGarantia } from "../model/MNotaAlquilerGarantia";
+import { Pendiente } from "../model/notaalquiler/pendiente";
+import { Entregado } from "../model/notaalquiler/entregado";
+import { Retrasado } from "../model/notaalquiler/retrasado";
+import { Devuelto } from "../model/notaalquiler/devuelto";
 
-export class CNotaAlquiler{
+
+export class CNotaAlquiler {
     private _mNotaAlquiler: MNotaAlquiler;
     private _vNotaAlquiler: VNotaAlquiler;
 
@@ -21,8 +26,8 @@ export class CNotaAlquiler{
 
     private _mNotaAlquilerGarantia: MNotaAlquilerGarantia;
     private _mGarantia: MGarantia;
-    
-    
+
+
 
     /**
      * constructor
@@ -46,15 +51,15 @@ export class CNotaAlquiler{
      * @param request HTTP request
      * @param response HTTP response
      */
-    public getList = async (request: Request, response: Response): Promise<void> =>{
+    public getList = async (request: Request, response: Response): Promise<void> => {
         try {
             let list = await this._mNotaAlquiler.getAll();
             let localList = await this._mLocal.getAll();
             let clienteList = await this._mCliente.getAll();
-            this._vNotaAlquiler.renderView(response, {list, localList, clienteList});
+            this._vNotaAlquiler.renderView(response, { list, localList, clienteList });
         } catch (error) {
             console.error("Error into CNotaAlquiler > getList: " + error);
-            this._vNotaAlquiler.renderView(response, {error: "Error al obtener la lista de nota alquileres"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al obtener la lista de nota alquileres" });
         }
     }
 
@@ -63,19 +68,19 @@ export class CNotaAlquiler{
      * @param request HTTP request
      * @param response HTTP response
      */
-    public getById = async (request: Request, response: Response): Promise<void> =>{
+    public getById = async (request: Request, response: Response): Promise<void> => {
         try {
             let entity = await this._mNotaAlquiler.getById(request.params.id);
             let list = await this._mNotaAlquiler.getAll();
             let localList = await this._mLocal.getAll();
             let clienteList = await this._mCliente.getAll();
-            this._vNotaAlquiler.renderView(response, {list, entity, localList, clienteList});
+            this._vNotaAlquiler.renderView(response, { list, entity, localList, clienteList });
         } catch (error) {
             console.error("Error into CNotaAlquiler > getById: " + error);
-            this._vNotaAlquiler.renderView(response, {error: "Error al obtener los datos de la nota alquiler"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al obtener los datos de la nota alquiler" });
         }
     }
-    
+
     /**
      * register a new nota alquiler
      * @param request HTTP request
@@ -84,11 +89,11 @@ export class CNotaAlquiler{
     public postNotaAlquiler = async (request: Request, response: Response): Promise<void> => {
         try {
             let { concepto, fecha_devolucion, codigo_local, ci_cliente } = request.body;
-            let post = await this._mNotaAlquiler.create({concepto, fecha_devolucion, codigo_local, ci_cliente});
+            let post = await this._mNotaAlquiler.create({ concepto, fecha_devolucion, codigo_local, ci_cliente });
             this._vNotaAlquiler.redirectViewArticuloGarantia(response, post.nro);
         } catch (error) {
             console.log("Error into CNotaAlquiler > postNotaAlquiler", error);
-            this._vNotaAlquiler.renderView(response,{error: "Error al registrar al nota alquiler"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al registrar al nota alquiler" });
         }
     }
 
@@ -101,14 +106,112 @@ export class CNotaAlquiler{
         try {
             let { concepto, fecha_devolucion, codigo_local, ci_cliente } = request.body;
             let id = request.params.id;
-            let put = await this._mNotaAlquiler.update(id, {concepto, fecha_devolucion, codigo_local, ci_cliente});
+            let put = await this._mNotaAlquiler.update(id, { concepto, fecha_devolucion, codigo_local, ci_cliente });
             let list = await this._mNotaAlquiler.getAll();
             let localList = await this._mLocal.getAll();
             let clienteList = await this._mCliente.getAll();
-            this._vNotaAlquiler.renderView(response, {list, put, localList, clienteList});
+            this._vNotaAlquiler.renderView(response, { list, put, localList, clienteList });
         } catch (error) {
             console.log("Error into CNotaAlquiler > putNotaAlquiler", error);
-            this._vNotaAlquiler.renderView(response, {error: "Error al modificar los datos del nota alquiler"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al modificar los datos del nota alquiler" });
+        }
+    }
+
+    /**
+     * update the state of a specific  nota alquiler
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public putPendienteNotaAlquiler = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let id = request.params.id;
+            await this.setLastState(id);
+            if (this._mNotaAlquiler.estado.notaAlquilerPendiente(this._mNotaAlquiler)) {
+                let put = await this._mNotaAlquiler.updateState(id, 'P');
+                let list = await this._mNotaAlquiler.getAll();
+                let localList = await this._mLocal.getAll();
+                let clienteList = await this._mCliente.getAll();
+                this._vNotaAlquiler.renderView(response, { list, put, localList, clienteList });
+            } else {
+                this._vNotaAlquiler.renderView(response, { error: "No se Puede cambiar al estado PENDIENTE!" });
+            }
+
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > putNotaAlquiler", error);
+            this._vNotaAlquiler.renderView(response, { error: "Error al modificar los datos del nota alquiler" });
+        }
+    }
+
+    /**
+     * update the state of a specific  nota alquiler
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public putEntregadoNotaAlquiler = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let id = request.params.id;
+            await this.setLastState(id);
+            if (this._mNotaAlquiler.estado.notaAlquilerEntregado(this._mNotaAlquiler)) {
+                let put = await this._mNotaAlquiler.updateState(id, 'E');
+                let list = await this._mNotaAlquiler.getAll();
+                let localList = await this._mLocal.getAll();
+                let clienteList = await this._mCliente.getAll();
+                this._vNotaAlquiler.renderView(response, { list, put, localList, clienteList });
+            } else {
+                this._vNotaAlquiler.renderView(response, { error: "No se Puede cambiar al estado ENTREGADO!" });
+            }
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > putNotaAlquiler", error);
+            this._vNotaAlquiler.renderView(response, { error: "Error al modificar los datos del nota alquiler" });
+        }
+    }
+
+    /**
+     * update the state of a specific  nota alquiler
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public putDevueltoNotaAlquiler = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let id = request.params.id;
+            await this.setLastState(id);
+            if (this._mNotaAlquiler.estado.notaAlquilerDevuelto(this._mNotaAlquiler)) {
+                let put = await this._mNotaAlquiler.updateState(id, 'D');
+                let list = await this._mNotaAlquiler.getAll();
+                let localList = await this._mLocal.getAll();
+                let clienteList = await this._mCliente.getAll();
+                this._vNotaAlquiler.renderView(response, { list, put, localList, clienteList });
+            } else {
+                this._vNotaAlquiler.renderView(response, { error: "No se Puede cambiar al estado DEVUELTO!" });
+            }
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > putNotaAlquiler", error);
+            this._vNotaAlquiler.renderView(response, { error: "Error al modificar los datos del nota alquiler" });
+        }
+    }
+
+    /**
+     * update the state of a specific  nota alquiler
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public putRetrasadoNotaAlquiler = async (request: Request, response: Response): Promise<void> => {
+        try {
+            let id = request.params.id;
+            await this.setLastState(id);
+            if (this._mNotaAlquiler.estado.notaAlquilerRetrasado(this._mNotaAlquiler)) {
+                let put = await this._mNotaAlquiler.updateState(id, 'R');
+                let list = await this._mNotaAlquiler.getAll();
+                let localList = await this._mLocal.getAll();
+                let clienteList = await this._mCliente.getAll();
+                this._vNotaAlquiler.renderView(response, { list, put, localList, clienteList });
+            } else {
+                this._vNotaAlquiler.renderView(response, { error: "No se Puede cambiar al estado RETRASADO!" });
+            }
+
+        } catch (error) {
+            console.log("Error into CNotaAlquiler > putNotaAlquiler", error);
+            this._vNotaAlquiler.renderView(response, { error: "Error al modificar los datos del nota alquiler" });
         }
     }
 
@@ -124,10 +227,10 @@ export class CNotaAlquiler{
             let list = await this._mNotaAlquiler.getAll();
             let localList = await this._mLocal.getAll();
             let clienteList = await this._mCliente.getAll();
-            this._vNotaAlquiler.renderView(response, {list, _delete, localList, clienteList});
+            this._vNotaAlquiler.renderView(response, { list, _delete, localList, clienteList });
         } catch (error) {
             console.log("Error into CNotaAlquiler > deleteNotaAlquiler", error);
-            this._vNotaAlquiler.renderView(response, {error: "Error al eliminar al nota alquiler"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al eliminar al nota alquiler" });
         }
     }
 
@@ -136,7 +239,7 @@ export class CNotaAlquiler{
      * @param request HTTP request
      * @param response HTTP response
      */
-    public getListArticuloGarantia = async (request: Request, response: Response): Promise<void> =>{
+    public getListArticuloGarantia = async (request: Request, response: Response): Promise<void> => {
         try {
             let nro = request.params.nro;
             let notaalquiler = await this._mNotaAlquiler.getById(nro);
@@ -147,10 +250,10 @@ export class CNotaAlquiler{
             let notaAlquilerGarantia = await this._mNotaAlquilerGarantia.getAll(nro);
             let garantiaList = await this._mGarantia.getAll();
 
-            this._vNotaAlquiler.renderViewArticuloGarantia(response, {notaalquiler, notaAlquilerArticulo, articuloList, notaAlquilerGarantia, garantiaList});
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, { notaalquiler, notaAlquilerArticulo, articuloList, notaAlquilerGarantia, garantiaList });
         } catch (error) {
             console.log("Error in CNotaAlquiler > getListArticuloGarantia");
-            this._vNotaAlquiler.renderView(response, {error: "Error al obtener los articulos y garantias"});
+            this._vNotaAlquiler.renderView(response, { error: "Error al obtener los articulos y garantias" });
         }
     }
 
@@ -162,11 +265,11 @@ export class CNotaAlquiler{
     public postNotaAlquilerArticulo = async (request: Request, response: Response): Promise<void> => {
         try {
             let { nro_notaalquiler, codigo_articulo, cantidad } = request.body;
-            let postArticulo = await this._mNotaAlquilerArticulo.create({nro_notaalquiler, codigo_articulo, cantidad});
+            let postArticulo = await this._mNotaAlquilerArticulo.create({ nro_notaalquiler, codigo_articulo, cantidad });
             this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro_notaalquiler);
         } catch (error) {
             console.log("Error into CNotaAlquiler > postNotaAlquilerArticulo", error);
-            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar articulos en la nota de alquiler"});
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, { error: "Error al agregar articulos en la nota de alquiler" });
         }
     }
 
@@ -183,7 +286,7 @@ export class CNotaAlquiler{
             this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro);
         } catch (error) {
             console.log("Error into CNotaAlquiler > deleteNotaAlquilerArticulo", error);
-            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al eliminar articulo de la nota de alquiler"});
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, { error: "Error al eliminar articulo de la nota de alquiler" });
         }
     }
 
@@ -195,11 +298,11 @@ export class CNotaAlquiler{
     public postNotaAlquilerGarantia = async (request: Request, response: Response): Promise<void> => {
         try {
             let { nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico } = request.body;
-            let postArticulo = await this._mNotaAlquilerGarantia.create({nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico});
+            let postArticulo = await this._mNotaAlquilerGarantia.create({ nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico });
             this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro_notaalquiler);
         } catch (error) {
             console.log("Error into CNotaAlquiler > postNotaAlquilerGarantia", error);
-            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar garantia en la nota de alquiler"});
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, { error: "Error al agregar garantia en la nota de alquiler" });
         }
     }
 
@@ -216,7 +319,21 @@ export class CNotaAlquiler{
             this._vNotaAlquiler.redirectViewArticuloGarantia(response, nro);
         } catch (error) {
             console.log("Error into CNotaAlquiler > deleteNotaAlquilerGarantia", error);
-            this._vNotaAlquiler.renderViewArticuloGarantia(response,{error: "Error al agregar garantias en la nota de alquiler"});
+            this._vNotaAlquiler.renderViewArticuloGarantia(response, { error: "Error al agregar garantias en la nota de alquiler" });
+        }
+    }
+
+    private async setLastState(id: any) {
+        let lastState = await this._mNotaAlquiler.getById(id);
+        lastState = lastState.estado;
+        if (lastState == 'P') {
+            this._mNotaAlquiler.setEstado(new Pendiente());
+        } else if (lastState == 'E') {
+            this._mNotaAlquiler.setEstado(new Entregado());
+        } else if (lastState == 'R') {
+            this._mNotaAlquiler.setEstado(new Retrasado());
+        } else if (lastState == 'D') {
+            this._mNotaAlquiler.setEstado(new Devuelto());
         }
     }
 }

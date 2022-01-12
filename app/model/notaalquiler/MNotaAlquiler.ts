@@ -1,4 +1,9 @@
-import { Connection } from "../conection";
+import { Connection } from "../../conection";
+import { Devuelto } from "./devuelto";
+import { Entregado } from "./entregado";
+import {MNotaAlquiler_State} from "./MNotaAlquiler_State";
+import { Pendiente } from "./pendiente";
+import { Retrasado } from "./retrasado";
 
 export class MNotaAlquiler{
     /**
@@ -11,6 +16,7 @@ export class MNotaAlquiler{
      private _total: number;
      private _codigo_local: number;
      private _ci_cliente: number;
+     private _estado: MNotaAlquiler_State;
      private _connection: Connection;
 
      /**
@@ -23,16 +29,17 @@ export class MNotaAlquiler{
       * @param codigo_local local's codigo_local
       * @param ci_cliente cliente's ci
       */
-     public constructor(nro: number = 0,concepto:string = '', fecha_entrega: string = '', fecha_devolucion: string = '', total: number = 0.00, codigo_local:number = 0, ci_cliente: number= 0) {
-         this._nro = nro;
-         this._concepto = concepto;
-         this._fecha_entrega = fecha_entrega;
-         this._fecha_devolucion = fecha_devolucion;
-         this._total = total;
-         this._codigo_local = codigo_local;
-         this._ci_cliente = ci_cliente;
-         this._connection = Connection.getInstance();
-     }
+    public constructor(nro: number = 0,concepto:string = '', fecha_entrega: string = '', fecha_devolucion: string = '', total: number = 0.00, estado: MNotaAlquiler_State = new Pendiente(),codigo_local:number = 0, ci_cliente: number= 0) {
+        this._nro = nro;
+        this._concepto = concepto;
+        this._fecha_entrega = fecha_entrega;
+        this._fecha_devolucion = fecha_devolucion;
+        this._total = total;
+        this._estado = estado;
+        this._codigo_local = codigo_local;
+        this._ci_cliente = ci_cliente;
+        this._connection = Connection.getInstance();
+    }
 
      /**
       * get all nota alquileres
@@ -78,7 +85,7 @@ export class MNotaAlquiler{
      */
     public create = async (entity: any): Promise<any | null> =>{
         try {
-            let response: any = (await this._connection.query(`insert into notaalquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('${entity.concepto}', 'now()', '${entity.fecha_devolucion}', 0.00, ${entity.codigo_local}, ${entity.ci_cliente}) returning*;`)).rows[0];
+            let response: any = (await this._connection.query(`insert into notaalquiler(concepto, fecha_entrega, fecha_devolucion, total, estado, codigo_local, ci_cliente) values('${entity.concepto}', 'now()', '${entity.fecha_devolucion}', 0.00, 'P',${entity.codigo_local}, ${entity.ci_cliente}) returning*;`)).rows[0];
             response.fecha_entrega = response.fecha_entrega.toLocaleDateString();
             response.fecha_devolucion = response.fecha_devolucion.toLocaleDateString();
             this._nro = response.nro;
@@ -112,6 +119,23 @@ export class MNotaAlquiler{
             this._total = response.total;
             this._codigo_local = response.codigo_local;
             this._ci_cliente = response.ci_cliente;
+            return response;
+        } catch (error) {
+            console.error("Error into MNotaAlquiler > update: " + error);
+            return null;
+        }
+    }
+
+    /**
+     * update a specific nota alquiler
+     * @param nro nota alquiler identifier to update
+     * @param state the new data to update
+     * @returns an updated administrator data object
+     */
+     public updateState = async (nro: any, state: any): Promise<any> => {
+        try {
+            
+            let response: any = (await this._connection.query(`update notaalquiler set estado='${state}' where nro='${nro}'returning *;`)).rows[0];
             return response;
         } catch (error) {
             console.error("Error into MNotaAlquiler > update: " + error);
@@ -156,6 +180,10 @@ export class MNotaAlquiler{
         return this._total;
     }
 
+    get estado(){
+        return this._estado;
+    }
+
     get codigo_local() {
         return this._codigo_local;
     }
@@ -163,4 +191,9 @@ export class MNotaAlquiler{
     get ci_cliente() {
         return this._ci_cliente;
     }
+
+    public setEstado(state: MNotaAlquiler_State) {
+        this._estado = state;
+    }
+    
 }

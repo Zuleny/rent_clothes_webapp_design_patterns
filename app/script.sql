@@ -1,6 +1,6 @@
-CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'mypass';
+--CREATE ROLE arquitectura_sw WITH  LOGIN  INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'mypass';
 
-CREATE DATABASE arquitectura_sw with owner=arquitectura_sw encoding='UTF8' tablespace=pg_default CONNECTION LIMIT=-1;
+--CREATE DATABASE arquitectura_sw with owner=arquitectura_sw encoding='UTF8' tablespace=pg_default CONNECTION LIMIT=-1;
 
 create table Administrador(
 	id serial not null primary key,
@@ -46,6 +46,7 @@ create table NotaAlquiler(
 	fecha_entrega date not null,
 	fecha_devolucion date not null,
 	total decimal(12,2) not null,
+	estado varchar(1) not null,
 	codigo_local integer not null,
 	ci_cliente integer not null,
 	foreign key(codigo_local) references Local(codigo)
@@ -137,9 +138,9 @@ insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursa
 insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursal Virgen de Cotoca', 'Avenida Virgen de Cotocar y 4to Anillo', '33472987', 2);
 insert into Local(nombre, direccion, telefono, id_administrador) values('Sucursal Santos Dumon', 'Avenida Santos Dumont y 3er Anillo', '33422987', 3);
 
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de tipoy y vestido de novia', '2021/10/22', '2021/10/26', 350.5, 1, 9710836);
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de traje tobas', '2021/10/22', '2021/10/26', 70.5, 2, 8724516);
-insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, codigo_local, ci_cliente) values('Alquiler de traje varon', '2021/10/22', '2021/10/26', 500, 3, 9710830);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, estado, codigo_local, ci_cliente) values('Alquiler de tipoy y vestido de novia', '2021/10/22', '2021/10/26', 350.5, 'P',1, 9710836);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, estado, codigo_local, ci_cliente) values('Alquiler de traje tobas', '2021/10/22', '2021/10/26', 70.5, 'P',2, 8724516);
+insert into NotaAlquiler(concepto, fecha_entrega, fecha_devolucion, total, estado, codigo_local, ci_cliente) values('Alquiler de traje varon', '2021/10/22', '2021/10/26', 500, 'P',3, 9710830);
 
 insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(1, 1, 1, 'Telefono Sansumg A0 color rojo');
 insert into NotaAlquilerGarantia(nro_notaalquiler, codigo_garantia, cantidad, detalle_especifico) values(2, 2, 1, 'Anillo de 28 kilates con diamantina');

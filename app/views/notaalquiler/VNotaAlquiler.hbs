@@ -47,8 +47,7 @@
             </div>
             <div class="mb-3">
                 <label for="fecha_entrega" class="form-label">Fecha entrega</label>
-                <input type="text" class="form-control" name="fecha_entrega"
-                    value="{{entity.fecha_entrega}}" disabled>
+                <input type="text" class="form-control" name="fecha_entrega" value="{{entity.fecha_entrega}}" disabled>
             </div>
             <div class="mb-3">
                 <label for="fecha_devolucion" class="form-label">Fecha devolucion</label>
@@ -141,6 +140,7 @@
                         <th>Local</th>
                         <th>Cliente</th>
                         <th>Total</th>
+                        <th>Estado</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -154,6 +154,7 @@
                         <td>{{codigo_local}}</td>
                         <td>{{ci_cliente}}</td>
                         <td>{{total}}</td>
+                        <td>{{estado}}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="">
                                 <form action="/notaalquiler/{{nro}}" method="get">
@@ -171,8 +172,48 @@
                                     </button>
                                 </form>
                                 <a class="btn btn-outline-secondary" href="/notaalquiler/articulo_garantia/{{nro}}"
-                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Agregar Prendas y Garantias"><i
-                                        class="bi bi-bag-plus"></i></a>
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Agregar Prendas y Garantias"><i class="bi bi-bag-plus"></i></a>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        Estados
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <form action="/notaalquiler/modificar_pendiente/{{nro}}?_method=PUT" method="post" class="dropdown-item">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="btn btn-outline-secondary">
+                                                    Pendiente
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="/notaalquiler/modificar_entregado/{{nro}}?_method=PUT" method="post" class="dropdown-item">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="btn btn-outline-secondary">
+                                                    Entregado
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="/notaalquiler/modificar_devuelto/{{nro}}?_method=PUT" method="post" class="dropdown-item">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="btn btn-outline-secondary">
+                                                    Devuelto
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="/notaalquiler/modificar_retrasado/{{nro}}?_method=PUT" method="post" class="dropdown-item">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="btn btn-outline-secondary">
+                                                    Retrasado
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -182,6 +223,7 @@
         </div>
     </div>
 </div>
+
 <script>
     function load() {
         let elementCodigoLocal = document.getElementById("codigo_local");

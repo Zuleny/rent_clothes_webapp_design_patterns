@@ -65,6 +65,10 @@ router.get('/notaalquiler', cNotaAlquiler.getList);
 router.get('/notaalquiler/:id', cNotaAlquiler.getById);
 router.post('/notaalquiler/crear', cNotaAlquiler.postNotaAlquiler);
 router.put('/notaalquiler/modificar/:id', cNotaAlquiler.putNotaAlquiler);
+router.put('/notaalquiler/modificar_pendiente/:id', cNotaAlquiler.putPendienteNotaAlquiler);
+router.put('/notaalquiler/modificar_entregado/:id', cNotaAlquiler.putEntregadoNotaAlquiler);
+router.put('/notaalquiler/modificar_devuelto/:id', cNotaAlquiler.putDevueltoNotaAlquiler);
+router.put('/notaalquiler/modificar_retrasado/:id', cNotaAlquiler.putRetrasadoNotaAlquiler);
 router.delete('/notaalquiler/eliminar/:id', cNotaAlquiler.deleteNotaAlquiler);
 
 router.get('/notaalquiler/articulo_garantia/:nro', cNotaAlquiler.getListArticuloGarantia);
